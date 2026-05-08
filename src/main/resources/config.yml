@@ -1,2 +1,10 @@
 options:
   auto-update: true
+  check-update: true
+
+updater:
+  owner: NoobEric0746
+  repo: SlimefunUtils
+  api-url: https://api.github.com/repos/%owner%/%repo%/releases/latest
+  connect-timeout-ms: 10000
+  read-timeout-ms: 15000
