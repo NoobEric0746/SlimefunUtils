@@ -41,7 +41,9 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import me.nooberic.slimefunutils.items.scrolls.AscensionScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FireballScrollItem;
+import me.nooberic.slimefunutils.items.scrolls.FreezeScrollItem;
 
 public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
 
@@ -111,6 +113,52 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         );
         fireballScrollResearch.addItems(fireballScrollItem);
         fireballScrollResearch.register();
+
+        SlimefunItemStack freezeScroll = new SlimefunItemStack(
+            "SCROLL_FREEZE",
+            createEnchantedPaperIcon("&b卷轴:冰冻术", "&7冰冻周围生物")
+        );
+
+        ItemStack[] freezeScrollRecipe = {
+            null, new ItemStack(Material.ICE), null,
+            new ItemStack(Material.ICE), blankScroll.clone(), new ItemStack(Material.ICE),
+            null, new ItemStack(Material.ICE), null
+        };
+
+        SlimefunItem freezeScrollItem = new FreezeScrollItem(this, itemGroup, freezeScroll, RecipeType.MAGIC_WORKBENCH, freezeScrollRecipe);
+        freezeScrollItem.register(this);
+
+        Research freezeScrollResearch = new Research(
+            new NamespacedKey(this, "scroll_freeze"),
+            9502,
+            "天寒地冻",
+            15
+        );
+        freezeScrollResearch.addItems(freezeScrollItem);
+        freezeScrollResearch.register();
+
+        SlimefunItemStack ascensionScroll = new SlimefunItemStack(
+            "SCROLL_ASCENSION",
+            createEnchantedPaperIcon("&a卷轴:通天术", "&7快速返回地表")
+        );
+
+        ItemStack[] ascensionScrollRecipe = {
+            null, SlimefunItems.AIR_RUNE.clone(), null,
+            new ItemStack(Material.FEATHER), blankScroll.clone(), new ItemStack(Material.FEATHER),
+            null, null, null
+        };
+
+        SlimefunItem ascensionScrollItem = new AscensionScrollItem(this, itemGroup, ascensionScroll, RecipeType.MAGIC_WORKBENCH, ascensionScrollRecipe);
+        ascensionScrollItem.register(this);
+
+        Research ascensionScrollResearch = new Research(
+            new NamespacedKey(this, "scroll_ascension"),
+            9503,
+            "快速返回地表",
+            20
+        );
+        ascensionScrollResearch.addItems(ascensionScrollItem);
+        ascensionScrollResearch.register();
     }
 
     @Override
