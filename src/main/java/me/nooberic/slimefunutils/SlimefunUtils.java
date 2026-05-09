@@ -47,6 +47,7 @@ import me.nooberic.slimefunutils.items.scrolls.AscensionScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FireballScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FreezeScrollItem;
 import me.nooberic.slimefunutils.items.utility.EmergencyHealingBottleItem;
+import me.nooberic.slimefunutils.items.utility.MysteriousWoodenSwordItem;
 import me.nooberic.slimefunutils.items.utility.VoodooDollItem;
 
 public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
@@ -243,6 +244,35 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         );
         emergencyHealingBottleResearch.addItems(emergencyHealingBottleItem);
         emergencyHealingBottleResearch.register();
+
+        SlimefunItemStack mysteriousWoodenSword = new SlimefunItemStack(
+            "MYSTERIOUS_WOODEN_SWORD",
+            Material.WOODEN_SWORD,
+            "&6神秘的木剑"
+        );
+
+        ItemStack[] mysteriousWoodenSwordRecipe = {
+            null, SlimefunItems.WITHER_PROOF_OBSIDIAN.clone(), null,
+            null, SlimefunItems.STRANGE_NETHER_GOO.clone(), null,
+            null, SlimefunItems.STAFF_ELEMENTAL.clone(), null
+        };
+
+        SlimefunItem mysteriousWoodenSwordItem = new MysteriousWoodenSwordItem(
+            utilityItemGroup,
+            mysteriousWoodenSword,
+            RecipeType.MAGIC_WORKBENCH,
+            mysteriousWoodenSwordRecipe
+        );
+        mysteriousWoodenSwordItem.register(this);
+
+        Research mysteriousWoodenSwordResearch = new Research(
+            new NamespacedKey(this, "mysterious_wooden_sword"),
+            9506,
+            "看起来没什么用",
+            55
+        );
+        mysteriousWoodenSwordResearch.addItems(mysteriousWoodenSwordItem);
+        mysteriousWoodenSwordResearch.register();
     }
 
     @Override
