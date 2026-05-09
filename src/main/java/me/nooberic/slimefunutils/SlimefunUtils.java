@@ -25,7 +25,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionType;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -44,6 +46,8 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.nooberic.slimefunutils.items.scrolls.AscensionScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FireballScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FreezeScrollItem;
+import me.nooberic.slimefunutils.items.utility.EmergencyHealingBottleItem;
+import me.nooberic.slimefunutils.items.utility.VoodooDollItem;
 
 public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
 
@@ -65,6 +69,12 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
             createEnchantedPaperIcon("&d魔法卷轴", "&7收纳各种神秘卷轴")
         );
         itemGroup.register(this);
+
+        ItemGroup utilityItemGroup = new ItemGroup(
+            new NamespacedKey(this, "utility_items"),
+            new CustomItemStack(Material.FIREWORK_ROCKET, "&e实用道具", "&7收纳各种便捷工具")
+        );
+        utilityItemGroup.register(this);
 
         SlimefunItemStack blankScroll = new SlimefunItemStack(
             "BLANK_SCROLL",
@@ -159,6 +169,80 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         );
         ascensionScrollResearch.addItems(ascensionScrollItem);
         ascensionScrollResearch.register();
+
+        SlimefunItemStack voodooDoll = new SlimefunItemStack(
+            "VOODOO_DOLL",
+            createUnstackableUtilityIcon(
+                "WEATHERED_COPPER_GOLEM_STATUE",
+                "&6巫毒玩偶",
+                "&7斑驳的铜傀儡雕像",
+                "&8右键效果后续添加"
+            )
+        );
+
+        ItemStack[] voodooDollRecipe = {
+            null, SlimefunItems.NECROTIC_SKULL.clone(), null,
+            null, new ItemStack(Material.ARMOR_STAND), null,
+            null, new ItemStack(Material.HAY_BLOCK), null
+        };
+
+        SlimefunItem voodooDollItem = new VoodooDollItem(utilityItemGroup, voodooDoll, RecipeType.MAGIC_WORKBENCH, voodooDollRecipe);
+        voodooDollItem.register(this);
+
+        Research voodooDollResearch = new Research(
+            new NamespacedKey(this, "voodoo_doll"),
+            9504,
+            "害人终害己啊",
+            40
+        );
+        voodooDollResearch.addItems(voodooDollItem);
+        voodooDollResearch.register();
+
+        ItemStack emergencyHealingBottleIcon = new CustomItemStack(
+            Material.POTION,
+            "&c应急血瓶",
+            "&7危急时刻自动回复生命"
+        );
+        ItemMeta emergencyHealingBottleMeta = emergencyHealingBottleIcon.getItemMeta();
+        if (emergencyHealingBottleMeta instanceof PotionMeta potionMeta) {
+            potionMeta.setBasePotionType(PotionType.HEALING);
+            emergencyHealingBottleIcon.setItemMeta(potionMeta);
+        }
+
+        SlimefunItemStack emergencyHealingBottle = new SlimefunItemStack(
+            "EMERGENCY_HEALING_BOTTLE",
+            emergencyHealingBottleIcon
+        );
+
+        ItemStack healingPotion = new ItemStack(Material.POTION);
+        ItemMeta healingPotionMeta = healingPotion.getItemMeta();
+        if (healingPotionMeta instanceof PotionMeta potionMeta) {
+            potionMeta.setBasePotionType(PotionType.HEALING);
+            healingPotion.setItemMeta(potionMeta);
+        }
+
+        ItemStack[] emergencyHealingBottleRecipe = {
+            null, createMagicCrystalI(), null,
+            createMagicCrystalI(), healingPotion, createMagicCrystalI(),
+            null, createMagicCrystalI(), null
+        };
+
+        SlimefunItem emergencyHealingBottleItem = new EmergencyHealingBottleItem(
+            utilityItemGroup,
+            emergencyHealingBottle,
+            RecipeType.MAGIC_WORKBENCH,
+            emergencyHealingBottleRecipe
+        );
+        emergencyHealingBottleItem.register(this);
+
+        Research emergencyHealingBottleResearch = new Research(
+            new NamespacedKey(this, "emergency_healing_bottle"),
+            9505,
+            "自动回血",
+            20
+        );
+        emergencyHealingBottleResearch.addItems(emergencyHealingBottleItem);
+        emergencyHealingBottleResearch.register();
     }
 
     @Override
@@ -430,7 +514,7 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         ItemMeta meta = icon.getItemMeta();
 
         if (meta != null) {
-            meta.addEnchant(Enchantment.LUCK, 1, true);
+            meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             icon.setItemMeta(meta);
         }
@@ -440,6 +524,50 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
 
     private ItemStack createMagicCrystalIi() {
         return SlimefunItems.MAGIC_LUMP_2.clone();
+    }
+
+    private ItemStack createMagicCrystalI() {
+        return SlimefunItems.MAGIC_LUMP_1.clone();
+    }
+
+    private ItemStack createUnstackableUtilityIcon(String materialKey, String name, String... lore) {
+        Material material = Material.matchMaterial(materialKey);
+        if (material == null) {
+            material = Material.WEATHERED_CUT_COPPER;
+        }
+
+        ItemStack icon = new CustomItemStack(material, name, lore);
+        applyMaxStackSize(icon, 1);
+        return icon;
+    }
+
+    private void applyMaxStackSize(ItemStack item, int size) {
+        boolean applied = false;
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            applied = trySetMaxStackSize(meta, size);
+            item.setItemMeta(meta);
+        }
+
+        if (applied) {
+            return;
+        }
+
+        try {
+            item.getClass().getMethod("setMaxStackSize", Integer.TYPE).invoke(item, size);
+        } catch (ReflectiveOperationException ex) {
+            getLogger().fine("当前服务端 API 不支持 ItemStack#setMaxStackSize 或 ItemMeta#setMaxStackSize，已跳过不可堆叠设置。: " + ex.getMessage());
+        }
+    }
+
+    private boolean trySetMaxStackSize(ItemMeta meta, int size) {
+        try {
+            meta.getClass().getMethod("setMaxStackSize", Integer.TYPE).invoke(meta, size);
+            return true;
+        } catch (ReflectiveOperationException ex) {
+            return false;
+        }
     }
 
     private record ReleaseInfo(String version, String downloadUrl, String fileName) {

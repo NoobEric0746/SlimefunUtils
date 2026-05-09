@@ -66,9 +66,9 @@ public class FreezeScrollItem extends SimpleSlimefunItem<ItemUseHandler> {
             }
 
             int duration = livingEntity instanceof Player ? PLAYER_EFFECT_DURATION_TICKS : EFFECT_DURATION_TICKS;
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, EFFECT_AMPLIFIER));
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, duration, EFFECT_AMPLIFIER));
             player.getWorld().spawnParticle(
-                Particle.BLOCK_CRACK,
+                Particle.BLOCK,
                 livingEntity.getLocation().add(0, livingEntity.getHeight() * 0.5, 0),
                 32,
                 0.35,

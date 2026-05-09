@@ -51,7 +51,7 @@ public class AscensionScrollItem extends SimpleSlimefunItem<ItemUseHandler> {
                 consumeItem(event.getItem());
             }
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, SLOW_DURATION_TICKS, SLOW_AMPLIFIER, false, true, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, SLOW_DURATION_TICKS, SLOW_AMPLIFIER, false, true, true));
             animateAscension(player, targetLocation);
         };
     }
@@ -131,8 +131,8 @@ public class AscensionScrollItem extends SimpleSlimefunItem<ItemUseHandler> {
             Vector first = helixOffset(angle, y);
             Vector second = helixOffset(angle + Math.PI, y);
 
-            world.spawnParticle(Particle.VILLAGER_HAPPY, origin.clone().add(first), 1, 0, 0, 0, 0);
-            world.spawnParticle(Particle.VILLAGER_HAPPY, origin.clone().add(second), 1, 0, 0, 0, 0);
+            world.spawnParticle(Particle.HAPPY_VILLAGER, origin.clone().add(first), 1, 0, 0, 0, 0);
+            world.spawnParticle(Particle.HAPPY_VILLAGER, origin.clone().add(second), 1, 0, 0, 0, 0);
         }
     }
 
