@@ -47,6 +47,7 @@ import me.nooberic.slimefunutils.items.scrolls.AscensionScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FireballScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FreezeScrollItem;
 import me.nooberic.slimefunutils.items.utility.EmergencyHealingBottleItem;
+import me.nooberic.slimefunutils.items.utility.GazhiAmuletItem;
 import me.nooberic.slimefunutils.items.utility.MysteriousWoodenSwordItem;
 import me.nooberic.slimefunutils.items.utility.VoodooDollItem;
 
@@ -273,6 +274,38 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         );
         mysteriousWoodenSwordResearch.addItems(mysteriousWoodenSwordItem);
         mysteriousWoodenSwordResearch.register();
+
+        SlimefunItemStack gazhiAmulet = new SlimefunItemStack(
+            "GAZHI_AMULET",
+            createUnstackableUtilityIcon(
+                "EMERALD",
+                "&a嘎枝的护身符",
+                "&7显示视线看着你的玩家"
+            )
+        );
+
+        ItemStack[] gazhiAmuletRecipe = {
+            SlimefunItems.MAGIC_LUMP_3.clone(), null, SlimefunItems.MAGIC_LUMP_3.clone(),
+            new ItemStack(Material.CREAKING_HEART), SlimefunItems.COMMON_TALISMAN.clone(), new ItemStack(Material.CREAKING_HEART),
+            SlimefunItems.MAGIC_LUMP_3.clone(), null, SlimefunItems.MAGIC_LUMP_3.clone()
+        };
+
+        SlimefunItem gazhiAmuletItem = new GazhiAmuletItem(
+            utilityItemGroup,
+            gazhiAmulet,
+            RecipeType.MAGIC_WORKBENCH,
+            gazhiAmuletRecipe
+        );
+        gazhiAmuletItem.register(this);
+
+        Research gazhiAmuletResearch = new Research(
+            new NamespacedKey(this, "gazhi_amulet"),
+            9507,
+            "谁在看着我?",
+            25
+        );
+        gazhiAmuletResearch.addItems(gazhiAmuletItem);
+        gazhiAmuletResearch.register();
     }
 
     @Override
