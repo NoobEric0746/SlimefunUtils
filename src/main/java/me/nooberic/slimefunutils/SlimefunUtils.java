@@ -15,17 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionType;
 
@@ -47,6 +51,8 @@ import me.nooberic.slimefunutils.items.scrolls.AscensionScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FireballScrollItem;
 import me.nooberic.slimefunutils.items.scrolls.FreezeScrollItem;
 import me.nooberic.slimefunutils.items.utility.EmergencyHealingBottleItem;
+import me.nooberic.slimefunutils.items.utility.HuaziAmuletItem;
+import me.nooberic.slimefunutils.items.utility.HuaziHeadItem;
 import me.nooberic.slimefunutils.items.utility.GazhiAmuletItem;
 import me.nooberic.slimefunutils.items.utility.MysteriousWoodenSwordItem;
 import me.nooberic.slimefunutils.items.utility.VoodooDollItem;
@@ -54,6 +60,7 @@ import me.nooberic.slimefunutils.items.utility.VoodooDollItem;
 public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
 
     private static final Gson GSON = new Gson();
+    private static final UUID HUAZI_UUID = UUID.fromString("ab094716-d680-4450-8c45-03288383fe1d");
 
     @Override
     public void onEnable() {
@@ -306,6 +313,68 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
         );
         gazhiAmuletResearch.addItems(gazhiAmuletItem);
         gazhiAmuletResearch.register();
+
+        SlimefunItemStack huaziAmulet = new SlimefunItemStack(
+            "HUAZI_AMULET",
+            createUnstackableUtilityIcon(
+                "EMERALD",
+                "&a_huazi_ 的护身符",
+                "&7服务器的每位玩家给你提供2点额外生命"
+            )
+        );
+
+        ItemStack[] huaziAmuletRecipe = {
+            SlimefunItems.MAGIC_LUMP_3.clone(), new ItemStack(Material.SUGAR), SlimefunItems.MAGIC_LUMP_3.clone(),
+            new ItemStack(Material.SUGAR), SlimefunItems.COMMON_TALISMAN.clone(), new ItemStack(Material.SUGAR),
+            SlimefunItems.MAGIC_LUMP_3.clone(), new ItemStack(Material.SUGAR), SlimefunItems.MAGIC_LUMP_3.clone()
+        };
+
+        SlimefunItem huaziAmuletItem = new HuaziAmuletItem(
+            utilityItemGroup,
+            huaziAmulet,
+            RecipeType.MAGIC_WORKBENCH,
+            huaziAmuletRecipe
+        );
+        huaziAmuletItem.register(this);
+
+        Research huaziAmuletResearch = new Research(
+            new NamespacedKey(this, "huazi_amulet"),
+            9508,
+            "人来疯",
+            42
+        );
+        huaziAmuletResearch.addItems(huaziAmuletItem);
+        huaziAmuletResearch.register();
+
+        SlimefunItemStack huaziHead = new SlimefunItemStack(
+            "HUAZI_HEAD",
+            createHuaziHeadIcon(),
+            "&f老华头",
+            "&7这是我们的服主,他很唐"
+        );
+
+        ItemStack[] huaziHeadRecipe = {
+            new ItemStack(Material.SUGAR), new ItemStack(Material.SUGAR), new ItemStack(Material.SUGAR),
+            new ItemStack(Material.SUGAR), new ItemStack(Material.WITHER_SKELETON_SKULL), new ItemStack(Material.SUGAR),
+            new ItemStack(Material.SUGAR), new ItemStack(Material.SUGAR), new ItemStack(Material.SUGAR)
+        };
+
+        SlimefunItem huaziHeadItem = new HuaziHeadItem(
+            utilityItemGroup,
+            huaziHead,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            huaziHeadRecipe
+        );
+        huaziHeadItem.register(this);
+
+        Research huaziHeadResearch = new Research(
+            new NamespacedKey(this, "huazi_head"),
+            9509,
+            "老华头",
+            0
+        );
+        huaziHeadResearch.addItems(huaziHeadItem);
+        huaziHeadResearch.register();
     }
 
     @Override
@@ -601,6 +670,19 @@ public class SlimefunUtils extends JavaPlugin implements SlimefunAddon {
 
         ItemStack icon = new CustomItemStack(material, name, lore);
         applyMaxStackSize(icon, 1);
+        return icon;
+    }
+
+    private ItemStack createHuaziHeadIcon() {
+        ItemStack icon = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta meta = icon.getItemMeta();
+
+        if (meta instanceof SkullMeta skullMeta) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(HUAZI_UUID);
+            skullMeta.setOwningPlayer(offlinePlayer);
+            icon.setItemMeta(skullMeta);
+        }
+
         return icon;
     }
 
